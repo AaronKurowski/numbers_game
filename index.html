@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="styles.css" rel="stylesheet">
+    <title>Number Game</title>
 </head>
 <body>
+    <main>
+        <p>Your placements: </p>
+        <ol class="number-list" data-game>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ol>
+        <p data-current-roll></p>
+        <label> Type a valid placement 
+            <input type="text" data-user-input>
+            <button data-user-place-btn>Place</button>
+        </label>
+        <p data-msg></p>
+    </main>
     <script type="text/javascript" src="game.js"></script>
 </body>
 </html>
