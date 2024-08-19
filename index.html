@@ -7,6 +7,9 @@
     <title>Number Game</title>
 </head>
 <body>
+    <aside>
+        <i>Place numbers in ascending order to win</i>
+    </aside>
     <main>
         <p>Your placements: </p>
         <ol class="number-list" data-game>
@@ -16,7 +19,7 @@
         </ol>
         <p data-current-roll></p>
         <label> Type a valid placement 
-            <input type="text" data-user-input>
+            <input type="number" data-user-input>
             <button data-user-place-btn>Place</button>
         </label>
         <p data-msg></p>

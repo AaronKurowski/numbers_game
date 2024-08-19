@@ -8,7 +8,7 @@ let didWin = false;
 let numberList = document.querySelector("[data-game]");
 let numberDisplay = document.querySelector("[data-current-roll");
 let msg = document.querySelector("[data-msg]");
-
+console.log(msg);
 
 // generate a random number 
 currentRoll = Math.floor(Math.random() * (gameBoundRight - gameBoundLeft + 1) + gameBoundLeft);
@@ -20,11 +20,15 @@ numberDisplay.innerHTML = "Current Roll: " + currentRoll;
 document.querySelector("[data-user-place-btn]").addEventListener("click", e => {
     let thisButton = e.target;
     let userPlacement = e.target.previousElementSibling.value;
-    let placeIsntTaken = numbers[userPlacement] === null;
+    let placeIsTaken = numbers[userPlacement] !== null;
 
-    if (userPlacement >= 1 && userPlacement <= gameSize && placeIsntTaken) {
-        numbers[userPlacement] = currentRoll;
-        numberList.children[userPlacement - 1].innerHTML = currentRoll;
+    if (userPlacement >= 1 && userPlacement <= gameSize) {
+        if (placeIsTaken) {
+            msg.innerHTML = "Number already placed there";
+        } else {
+            numbers[userPlacement] = currentRoll;
+            numberList.children[userPlacement - 1].innerHTML = currentRoll;
+        }
     } else {
         msg.innerHTML = "Invalid placement <br> Placements should be between <b>1</b> and <b>" + gameSize + "</b>";
         return;
@@ -32,7 +36,7 @@ document.querySelector("[data-user-place-btn]").addEventListener("click", e => {
 
     // check if game all have been filled
     userRolling = Object.values(numbers).some(el => el === null) ? true : false;
-    
+
     if (! userRolling) {
         // check if won
         didWin = Object.values(numbers).every((x, i) => {
@@ -42,6 +46,7 @@ document.querySelector("[data-user-place-btn]").addEventListener("click", e => {
         thisButton.disabled = true;
 
         if (didWin) {
+            msg.classList.add("flashy-text");
             msg.innerHTML = "******YOU WON!!!*******";
         } else {
             msg.innerHTML = "YOU LOST";

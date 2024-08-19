@@ -1,0 +1,11 @@
+body { background-color: whitesmoke; }
+
+.flashy-text {
+    animation: flash 250ms linear infinite;
+}
+
+@keyframes flash {
+    50% {
+        opacity: 0.15;
+    }
+}
