@@ -7,23 +7,36 @@
     <title>Number Game</title>
 </head>
 <body>
-    <aside>
-        <i>Place numbers in ascending order to win</i>
-    </aside>
-    <main>
-        <p>Your placements: </p>
-        <ol class="number-list" data-game>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ol>
-        <p data-current-roll></p>
-        <label> Type a valid placement 
-            <input type="number" data-user-input>
-            <button data-user-place-btn>Place</button>
-        </label>
-        <p data-msg></p>
-    </main>
-    <script type="text/javascript" src="game.js"></script>
+    <section data-game-setup-section>
+        <form data-setup-form>
+            <label> Game Size 
+                <input type="text" pattern="\d*[0-9]" value="20">
+            </label>
+            <label> Game Bound Left
+                <input type="text" pattern="\d*[0-9]" value="1">
+            </label>
+            <label> Game Bound Right
+                <input type="text" pattern="\d*[0-9]" value="1000">
+            </label>
+            <button>Submit</button>
+        </form>
+    </section>
+
+    <section data-game-section style="display: none;">
+        <aside>
+            <i>Place numbers in ascending order to win</i>
+        </aside>
+        <div data-game>
+            <p>Your placements: </p>
+            <ol data-number-list></ol>
+            <p data-current-roll></p>
+            <label> Type a valid placement 
+                <input type="number" data-user-input>
+                <button data-user-place-btn>Place</button>
+            </label>
+            <p data-msg></p>
+        </div>
+        <script type="text/javascript" src="game.js"></script>
+    </section>
 </body>
 </html>
