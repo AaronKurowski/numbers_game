@@ -1,4 +1,14 @@
-body { background-color: whitesmoke; }
+* { box-sizing: border-box; }
+body { 
+    background-color: rgb(29, 29, 29);
+    color: #dddac0;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 1.5rem;
+}
+
+:root {
+    --radius: 90px;
+}
 
 .flashy-text {
     animation: flash 250ms linear infinite;
@@ -8,4 +18,83 @@ body { background-color: whitesmoke; }
     50% {
         opacity: 0.15;
     }
+}
+
+.number-list {
+    padding: 0;
+    margin: 0;
+    margin-top: 1rem;
+}
+
+.number-holder {
+    outline: 3px solid skyblue;
+    width: var(--radius);
+    height: var(--radius);
+    margin: 1rem;
+    border-radius: 100%;
+    color: rgba(255, 0, 0, 0.404);
+    font-size: 1rem;
+}
+
+
+.number-list li:hover {
+    background-color: rgba(77, 255, 77, 0.774);
+}
+
+.fluid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.centered-nicely {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.roll {
+    outline: 3px solid gold;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 3.5rem;
+    border-radius: 18px;
+    user-select: none;
+    color: gold;
+    line-height: 88px;
+    font-size: 2.5rem;
+    border-radius: 100%;
+    width: var(--radius);
+    height: var(--radius);
+}
+
+.roll:active {
+    background-color: gold;
+    color: black;
+    outline: 3px solid gold;
+    cursor: grab;
+}
+
+.number.placing {
+    /* overlap when placed*/
+    width: var(--radius);
+    height: var(--radius);
+    /* outline-color: rgba(77, 255, 77, 0.774); */
+    line-height: 88px;
+    font-size: 2.5rem;
+    border-radius: 100%;
+}
+
+.number.placed, .taken {
+    color: lime;
+    outline-color: lime;
+    outline: 3px solid rgba(77, 255, 77, 0.667);
+}
+
+.noHover {
+    pointer-events: none;
 }

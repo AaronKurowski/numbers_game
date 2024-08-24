@@ -1,94 +1,99 @@
 let numbers = {};
 let userRolling = true;
 let currentRoll = 0;
-let gameSize = 3;
+let timesRolled = 1;
+let gameSize = 20;
 let gameBoundLeft = 1;
-let gameBoundRight = 10;
+let gameBoundRight = 1000;
 let didWin = false;
 let numberList = document.querySelector("[data-number-list]");
-let numberDisplay = document.querySelector("[data-current-roll");
+let numberDisplay = document.querySelector("[data-roll-space]");
 let msg = document.querySelector("[data-msg]");
 
-// Two main features
-// 1. Game setup
-// 2. Game play
+const dragStart = e => {
+    // Add the target element's id to the data transfer object
+    e.dataTransfer.setData("application/my-app", e.target.id);
+    e.dataTransfer.effectAllowed = "move";
+    console.log(e);
+}
 
-document.querySelector("[data-setup-form]").addEventListener("submit", e => {
-    e.preventDefault();
-    gameSize = parseInt(e.target[0].value);
-    gameBoundLeft = parseInt(e.target[1].value);
-    gameBoundRight = parseInt(e.target[2].value);
+// generate the list ellies
+for (let i = 0; i < gameSize; i++) {
+    let element = document.createElement("li");
+    element.id = "placement_" + (i + 1);
+    element.classList.add("number-holder")
+    numberList.appendChild(element);
+
+    Object.assign(numbers, { [i + 1]: null });
+}
+
+// generate a random number
+currentRoll = Math.floor(Math.random() * (gameBoundRight - gameBoundLeft + 1) + gameBoundLeft);
+
+let newRoll = document.createElement("div");
+newRoll.innerText = currentRoll;
+newRoll.dataset.rollCount = timesRolled;
+newRoll.classList.add("number", "roll", "placing");
+newRoll.id = "roll" + currentRoll;
+newRoll.dataset.currentRoll = true;
+newRoll.draggable = true;
+// display number
+numberDisplay.appendChild(newRoll);
+
+// Register that rolled number can be dragged
+let initialRoll = document.querySelector("[data-current-roll]");
+initialRoll.addEventListener("dragstart", dragStart);
+
+// register all the placement circles to drop the current roll
+let canBeDroppedOn = document.querySelectorAll(".number-list li");
+[...canBeDroppedOn].forEach(el => {
+    // allow drop and dragover
+    el.addEventListener("drop", e => {
+        e.preventDefault();
+
+        // Get the id of the current roll and add the moved element to the target's inner html
+        const data = e.dataTransfer.getData("application/my-app");
+        let elementDropped = document.getElementById(data);
+
+        // find position dropped and enter into object
+        let positionDropped = e.target.id.substring(e.target.id.indexOf("_") + 1);
+        numbers[positionDropped] = parseInt(elementDropped.innerText);
+        
+        // append dragged element and make style changes
+        let numberHolder = e.target;
+        numberHolder.appendChild(elementDropped);
+        elementDropped.classList.remove("placing");
+        elementDropped.classList.add("noHover", "placed");
+        numberHolder.classList.add("taken", "noHover");
     
-    document.querySelector("[data-game-section]").style.display = "block";
-    
-    e.target.parentElement.remove();
+        // don't allow it to move again
+        elementDropped.removeEventListener("dragstart", dragStart);
 
-    // generate the list ellies
-    for (let i = 0; i < gameSize; i++) {
-        let element = document.createElement("li");
-        element.id = "placement_" + (i + 1);
-        numberList.appendChild(element);
-
-        Object.assign(numbers, { [i + 1]: null });
-    }
-
-    // generate a random number 
-    currentRoll = Math.floor(Math.random() * (gameBoundRight - gameBoundLeft + 1) + gameBoundLeft);
-
-    // display number
-    numberDisplay.innerHTML = "Current Roll: " + currentRoll;
-});
-
-
-// take user input for placing
-document.querySelector("[data-user-place-btn]").addEventListener("click", e => {
-    msg.innerHTML = "";
-    let thisButton = e.target;
-    let userPlacement = e.target.previousElementSibling.value;
-    let placeIsTaken = numbers[userPlacement] !== null;
-
-    if (userPlacement >= 1 && userPlacement <= gameSize) {
-        if (placeIsTaken) {
-            msg.innerHTML = "Number already placed there";
-        } else {
-
-            // saving in an object idk
-            numbers[userPlacement] = currentRoll;
-
-            // list placement
-            numberList.children[userPlacement - 1].innerHTML = currentRoll;
-        }
-    } else {
-        msg.innerHTML = "Invalid placement <br> Placements should be between <b>1</b> and <b>" + gameSize + "</b>";
-        return;
-    }
-
-    // check if game all have been filled
-    userRolling = Object.values(numbers).some(el => el === null) ? true : false;
-
-    if (! userRolling) {
-        // check if won
-        didWin = Object.values(numbers).every((x, i) => {
-            return i === 0 || x >= Object.values(numbers)[i - 1];
-        });
-
-        thisButton.disabled = true;
-
-        if (didWin) {
-            msg.classList.add("flashy-text");
-            msg.innerHTML = "******YOU WON!!!*******";
-        } else {
-            msg.innerHTML = "YOU LOST";
-        }
-
-        userPlacement.disabled = true;
-    } else {
-        // generate a random number 
+        // TODO: careful this goes infinite with low game bounds
         while (Object.values(numbers).some(el => el === currentRoll)) {
             currentRoll = Math.floor(Math.random() * (gameBoundRight - gameBoundLeft + 1) + gameBoundLeft);
         }
 
+        // TODO: check if game ends
+
+        // increment and roll again
+        timesRolled++;
+        newRoll = document.createElement("div");
+        newRoll.innerText = currentRoll;
+        newRoll.dataset.rollCount = timesRolled;
+        newRoll.classList.add("number", "roll", "placing");
+        newRoll.id = "roll" + currentRoll;
+        newRoll.dataset.currentRoll = true;
+        newRoll.draggable = true;
+        newRoll.addEventListener("dragstart", dragStart);
+
         // display number
-        numberDisplay.innerHTML = "Current Roll: " + currentRoll;
-    }
+        numberDisplay.appendChild(newRoll);
+
+    });
+    el.addEventListener("dragover", e => {
+        // console.log(e);
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+    });
 });

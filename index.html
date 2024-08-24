@@ -7,7 +7,7 @@
     <title>Number Game</title>
 </head>
 <body>
-    <section data-game-setup-section>
+    <section data-game-setup-section style="display: none;">
         <form data-setup-form>
             <label> Game Size 
                 <input type="text" pattern="\d*[0-9]" value="20">
@@ -22,20 +22,16 @@
         </form>
     </section>
 
-    <section data-game-section style="display: none;">
+    <section data-game-section >
         <aside>
             <i>Place numbers in ascending order to win</i>
         </aside>
-        <div data-game>
-            <p>Your placements: </p>
-            <ol data-number-list></ol>
-            <p data-current-roll></p>
-            <label> Type a valid placement 
-                <input type="number" data-user-input>
-                <button data-user-place-btn>Place</button>
-            </label>
+        <div class="game-board centered-nicely" data-game>
+            <ol class="number-list fluid" data-number-list></ol>
+            <div data-roll-space></div>
             <p data-msg></p>
         </div>
+        <script type="text/javascript" src="helper.js"></script>
         <script type="text/javascript" src="game.js"></script>
     </section>
 </body>
