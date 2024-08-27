@@ -11,12 +11,26 @@ body {
 }
 
 .flashy-text {
+    color: goldenrod;
     animation: flash 250ms linear infinite;
+}
+
+.align {
+    animation: winner 150ms linear alternate infinite;
 }
 
 @keyframes flash {
     50% {
         opacity: 0.15;
+    }
+}
+
+@keyframes winner {
+    0% {
+        transform: translate(5%, 0%);
+    }
+    100% {
+        transform: translate(6%, 0%);
     }
 }
 

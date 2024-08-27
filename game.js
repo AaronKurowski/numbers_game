@@ -2,10 +2,12 @@ let numbers = {};
 let userRolling = true;
 let currentRoll = 0;
 let timesRolled = 1;
-let gameSize = 20;
+let gameSize = 3;
 let gameBoundLeft = 1;
 let gameBoundRight = 1000;
 let didWin = false;
+let prematureLoss = false;
+let userFail = false;
 let numberList = document.querySelector("[data-number-list]");
 let numberDisplay = document.querySelector("[data-roll-space]");
 let msg = document.querySelector("[data-msg]");
@@ -47,6 +49,9 @@ initialRoll.addEventListener("dragstart", dragStart);
 // register all the placement circles to drop the current roll
 let canBeDroppedOn = document.querySelectorAll(".number-list li");
 [...canBeDroppedOn].forEach(el => {
+    // clear for next
+    msg.innerHTML = "";
+
     // allow drop and dragover
     el.addEventListener("drop", e => {
         e.preventDefault();
@@ -74,25 +79,48 @@ let canBeDroppedOn = document.querySelectorAll(".number-list li");
             currentRoll = Math.floor(Math.random() * (gameBoundRight - gameBoundLeft + 1) + gameBoundLeft);
         }
 
-        // TODO: check if game ends
+        // check for a premature loss
+        let numbersFiltered = Object.values(numbers).filter(x => x !== null);
+        numbersFiltered.forEach((n, i) => {
+            if (n <= numbersFiltered[i - 1]) {
+                prematureLoss = true;
+            }
+        });
 
-        // increment and roll again
-        timesRolled++;
-        newRoll = document.createElement("div");
-        newRoll.innerText = currentRoll;
-        newRoll.dataset.rollCount = timesRolled;
-        newRoll.classList.add("number", "roll", "placing");
-        newRoll.id = "roll" + currentRoll;
-        newRoll.dataset.currentRoll = true;
-        newRoll.draggable = true;
-        newRoll.addEventListener("dragstart", dragStart);
-
-        // display number
-        numberDisplay.appendChild(newRoll);
-
+        if (prematureLoss) {
+            msg.innerHTML = "YOU LOST";
+        } else {
+            // check if game end
+            if (Object.values(numbers).every(x => x !== null)) {
+                // check if won
+                didWin = Object.values(numbers).every((x, i) => {
+                    return i === 0 || x >= Object.values(numbers)[i - 1];
+                });
+    
+                if (didWin) {
+                    msg.classList.add("flashy-text", "align");
+                    msg.innerHTML = "*****YOU WON!!*****";
+                } else {
+                    msg.innerHTML = "YOU LOST";
+                }
+            } else {
+                // increment and roll again
+                timesRolled++;
+                newRoll = document.createElement("div");
+                newRoll.innerText = currentRoll;
+                newRoll.dataset.rollCount = timesRolled;
+                newRoll.classList.add("number", "roll", "placing");
+                newRoll.id = "roll" + currentRoll;
+                newRoll.dataset.currentRoll = true;
+                newRoll.draggable = true;
+                newRoll.addEventListener("dragstart", dragStart);
+        
+                // display number
+                numberDisplay.appendChild(newRoll);
+            }
+        }
     });
     el.addEventListener("dragover", e => {
-        // console.log(e);
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
     });
