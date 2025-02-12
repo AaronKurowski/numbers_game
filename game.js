@@ -2,7 +2,7 @@ let numbers = {};
 let userRolling = true;
 let currentRoll = 0;
 let timesRolled = 1;
-let gameSize = 3;
+let gameSize = 8;
 let gameBoundLeft = 1;
 let gameBoundRight = 1000;
 let didWin = false;
@@ -82,12 +82,17 @@ let canBeDroppedOn = document.querySelectorAll(".number-list li");
         // check for a premature loss
         let numbersFiltered = Object.values(numbers).filter(x => x !== null);
         numbersFiltered.forEach((n, i) => {
-            if (n <= numbersFiltered[i - 1]) {
+            if (i !== 0 && n <= numbersFiltered[i - 1]) {
+                console.table({"index": i, "value": n, "prevNumber": numbersFiltered[i - 1]});
                 prematureLoss = true;
             }
         });
 
         if (prematureLoss) {
+            
+            let game = document.querySelector("[data-game]");
+            game.classList.add("fade-out");
+
             msg.innerHTML = "YOU LOST";
         } else {
             // check if game end
