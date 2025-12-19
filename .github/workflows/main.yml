@@ -1,0 +1,36 @@
+name: Publish Docker image to Digital Ocean Container Registry
+
+on:
+  push:
+    branches:
+      - master
+    # # Optional: only run if the Dockerfile or related files change
+    # paths:
+    #   - 'Dockerfile'
+    #   - './**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # permissions:
+    #   contents: read
+    #   packages: write # Required to write to the GitHub Container Registry
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Build container image
+        # The image will be tagged with a short SHA of the commit
+        run: docker build -t ${{ secrets.REGISTRY_NAME }}/sloplet-registry:$(echo $GITHUB_SHA | head -c7) .
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push ${{ secrets.REGISTRY_NAME }}/sloplet-registry:$(echo $GITHUB_SHA | head -c7)
