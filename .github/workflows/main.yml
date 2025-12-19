@@ -30,7 +30,7 @@ jobs:
 
       - name: Build container image
         # The image will be tagged with a short SHA of the commit
-        run: docker build -t ${{ secrets.REGISTRY_NAME }}/sloplet-registry:$(echo $GITHUB_SHA | head -c7) .
+        run: docker build -t ${{ secrets.REGISTRY_NAME }}/sloplet-registry/numbers_game:$(echo $GITHUB_SHA | head -c7) .
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push ${{ secrets.REGISTRY_NAME }}/sloplet-registry:$(echo $GITHUB_SHA | head -c7)
+        run: docker push ${{ secrets.REGISTRY_NAME }}/sloplet-registry/numbers_game:$(echo $GITHUB_SHA | head -c7)
